@@ -4,11 +4,14 @@ const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
+
 // middleware
 app.use(express.static('public'));
+app.use(express.json());
 
 // view engine
 app.set('view engine', 'ejs');
+
 
 // database connection
 const dbURI = 'mongodb+srv://juanita:test123@nodes-tutorial.w4fan.mongodb.net/Nodes-Tutorial';
