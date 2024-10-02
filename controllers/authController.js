@@ -1,3 +1,4 @@
+const { isJWT } = require('validator');
 const User = require('../models/user');
 //handle errors
 const handleErrors = (err) => {
@@ -21,6 +22,13 @@ const handleErrors = (err) => {
     return errors;
 }
 
+const masAge = 3 * 24 * 60 * 60;
+const createToken = (id) => {
+    return jwt.sign({ id }, 'net ninja secret', {
+        expiresIn: masAge
+    });
+}
+
 module.exports.signup_get = (req, res) => {
     res.render('signup');
 }
@@ -35,7 +43,9 @@ module.exports.signup_post = async (req, res) => {
 
     try{
         const user = await User.create({email, password});
-        res.status(201).json(user);
+        const token = createToken(user._id);
+        res.cookie('jwt', token, {httpOnly: true, maxAge: masAge * 1000})
+        res.status(201).json({ user: user._id});
     }
     catch(err){
         const errors = handleErrors(err);
